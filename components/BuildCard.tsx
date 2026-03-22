@@ -1,3 +1,5 @@
+'use client'
+
 import { BuildLog } from '@/lib/supabase'
 
 function timeAgo(dateStr: string): string {
