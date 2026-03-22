@@ -4,7 +4,7 @@ import { useState, useRef } from 'react'
 import { submitBuildLog } from '@/app/actions'
 
 export default function SubmitForm() {
-  const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle')
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [error, setError] = useState<string | null>(null)
   const formRef = useRef<HTMLFormElement>(null)
 
@@ -21,7 +21,8 @@ export default function SubmitForm() {
       setStatus('error')
     } else {
       formRef.current?.reset()
-      setStatus('idle')
+      setStatus('success')
+      setTimeout(() => setStatus('idle'), 3000)
     }
   }
 
@@ -79,24 +80,27 @@ export default function SubmitForm() {
         {error && (
           <p style={{ margin: 0, color: '#f87171', fontSize: '13px' }}>{error}</p>
         )}
+        {status === 'success' && (
+          <p style={{ margin: 0, color: '#4ade80', fontSize: '13px' }}>Shipped! Your build is posted.</p>
+        )}
 
         <button
           type="submit"
-          disabled={status === 'loading'}
+          disabled={status === 'loading' || status === 'success'}
           style={{
             padding: '10px 20px',
-            background: status === 'loading' ? '#4a3a9a' : '#7c5cfc',
+            background: status === 'loading' || status === 'success' ? '#4a3a9a' : '#7c5cfc',
             color: '#fff',
             border: 'none',
             borderRadius: '8px',
             fontSize: '14px',
             fontWeight: 600,
-            cursor: status === 'loading' ? 'not-allowed' : 'pointer',
+            cursor: status === 'loading' || status === 'success' ? 'not-allowed' : 'pointer',
             alignSelf: 'flex-start',
             transition: 'background 0.15s',
           }}
         >
-          {status === 'loading' ? 'Posting...' : 'Post it'}
+          {status === 'loading' ? 'Posting...' : status === 'success' ? 'Posted!' : 'Post it'}
         </button>
       </form>
     </div>
